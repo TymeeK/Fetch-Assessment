@@ -2,6 +2,7 @@
 import React from 'react';
 import DogFilter from './dogfilter';
 import { useState } from 'react';
+import DogDisplay from './dogdisplay';
 
 export interface Dog {
   id: string;
@@ -21,9 +22,7 @@ const Dogs = () => {
         <DogFilter setDogs={setDogs} />
       </div>
       <div>
-        {dogs.map(dog => (
-          <div key={dog.id}>{dog.name}</div>
-        ))}
+        <DogDisplay dogs={dogs} />
       </div>
     </div>
   );
