@@ -1,13 +1,19 @@
 'use client';
 import { Button, Card, Checkbox, Input } from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { Dog } from './page';
 
-const DogList = () => {
+export interface DogFilterProps {
+  setDogs: (dogs: Dog[]) => void;
+}
+
+const DogFilter = ({ setDogs }: DogFilterProps) => {
   const [dogBreeds, setDogBreeds] = useState<string[]>([]);
   const [selectedBreeds, setSelectedBreeds] = useState<Set<string>>(new Set());
 
   const [ageMin, setAgeMin] = useState<number>(0);
   const [ageMax, setAgeMax] = useState<number>(0);
+  const [zipCode, setZipCode] = useState<number[]>([]);
 
   useEffect(() => {
     fetch('https://frontend-take-home-service.fetch.com/dogs/breeds', {
@@ -22,13 +28,18 @@ const DogList = () => {
     return <div>Loading...</div>;
   }
 
-  const onButtonSearch = async () => {
+  const returnFilteredResults = async (): Promise<string> => {
     const breedsArray: string[] = Array.from(selectedBreeds);
 
     const params: URLSearchParams = new URLSearchParams();
     if (breedsArray.length > 0) {
       breedsArray.forEach((breed: string) => {
         params.append('breeds', breed);
+      });
+    }
+    if (zipCode.length > 0) {
+      zipCode.forEach((zip: number) => {
+        params.append('zipCodes', String(zip));
       });
     }
     if (ageMin > 0) {
@@ -47,21 +58,48 @@ const DogList = () => {
       }
     );
     const json = await response.json();
-    console.log(json.resultIds);
+    console.log(json, json.resultIds);
+    return json.resultIds;
+  };
+
+  const onButtonSearch = async () => {
+    const resultIds: string = await returnFilteredResults();
+    console.log(resultIds);
+
+    const response: Response = await fetch(
+      'https://frontend-take-home-service.fetch.com/dogs',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(resultIds),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    console.log(response);
+    const json = await response.json();
+    setDogs(json);
   };
 
   return (
     <div>
-      <h1>Find Dogs</h1>
+      <h2>Filter</h2>
       <div>
         <label>Age min</label>
         <Input onChange={e => setAgeMin(Number(e.target.value))} />
         <label>Age max</label>
         <Input onChange={e => setAgeMax(Number(e.target.value))} />
+        <label>Zip Code</label>
+        <Input onChange={e => setZipCode([Number(e.target.value)])} />
       </div>
       <Button onPress={onButtonSearch}>Search</Button>
 
-      <div className='grid grid-cols2 md:grid-cols-4 gap-4'>
+      <div>
         {dogBreeds.map(breed => (
           <Card
             className='p-4 cursor-pointer rounded-lg border ${selectedBreeds.has(breed) ? "bg-foreground text-background" : ""}'
@@ -87,4 +125,4 @@ const DogList = () => {
   );
 };
 
-export default DogList;
+export default DogFilter;
