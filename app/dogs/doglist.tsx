@@ -1,25 +1,13 @@
 'use client';
-import {
-  Button,
-  Card,
-  Checkbox,
-  Input,
-  Pagination,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from '@heroui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { Button, Card, Checkbox, Input } from '@heroui/react';
+import { useEffect, useState } from 'react';
 
 const DogList = () => {
-  const [dogBreeds, setDogBreeds] = useState([]);
-  const [selectedBreeds, setSelectedBreeds] = useState(new Set());
+  const [dogBreeds, setDogBreeds] = useState<string[]>([]);
+  const [selectedBreeds, setSelectedBreeds] = useState<Set<string>>(new Set());
 
-  const [ageMin, setAgeMin] = useState(0);
-  const [ageMax, setAgeMax] = useState(0);
+  const [ageMin, setAgeMin] = useState<number>(0);
+  const [ageMax, setAgeMax] = useState<number>(0);
 
   useEffect(() => {
     fetch('https://frontend-take-home-service.fetch.com/dogs/breeds', {
@@ -35,8 +23,24 @@ const DogList = () => {
   }
 
   const onButtonSearch = async () => {
+    const breedsArray: string[] = Array.from(selectedBreeds);
+
+    const params: URLSearchParams = new URLSearchParams();
+    if (breedsArray.length > 0) {
+      breedsArray.forEach((breed: string) => {
+        params.append('breeds', breed);
+      });
+    }
+    if (ageMin > 0) {
+      params.append('ageMin', String(ageMin));
+    }
+    if (ageMax > 0) {
+      params.append('ageMax', String(ageMax));
+    }
+    console.log(params.toString());
+
     const response = await fetch(
-      `https://frontend-take-home-service.fetch.com/dogs/search?ageMin=10`,
+      `https://frontend-take-home-service.fetch.com/dogs/search?${params}`,
       {
         method: 'GET',
         credentials: 'include',
