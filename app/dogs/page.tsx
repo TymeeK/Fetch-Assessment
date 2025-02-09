@@ -1,5 +1,6 @@
+'use client';
 import React from 'react';
-import DogList from './doglist';
+import DogDisplay from './dogdisplay';
 import DogFilter from './dogfilter';
 import { ScrollShadow } from '@heroui/react';
 import { useState } from 'react';
@@ -16,11 +17,15 @@ export interface Dog {
 const Dogs = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   return (
-    <div>
-      <ScrollShadow>
-        <DogFilter setDogs={setDogs} />
-      </ScrollShadow>
-      <DogList />
+    <div className='flex'>
+      <div className='w-1/4'>
+        <ScrollShadow>
+          <DogFilter setDogs={setDogs} />
+        </ScrollShadow>
+      </div>
+      <div>
+        <DogDisplay dogs={dogs} />
+      </div>
     </div>
   );
 };
