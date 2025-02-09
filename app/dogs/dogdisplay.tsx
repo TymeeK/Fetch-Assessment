@@ -20,13 +20,15 @@ const DogDisplay: React.FC<DogDisplayProps> = ({ dogs }) => {
             alt={dog.name}
           />
           <div className='flex flex-row p-3'>
-            <div className='flex flex-col w-1/2'>
+            <div className='flex justify-center items-center w-1/2'>
               <label>{dog.breed}</label>
-              <label>{dog.age} years old</label>
-              <label>{dog.zip_code}</label>
+              {/* <label>{dog.age} years old</label>
+              <label>{dog.zip_code}</label> */}
             </div>
-            <div className='w-1/2 flex justify-center items-center '>
-              <Button>Adopt</Button>
+            <div className='w-1/2 flex justify-end items-center '>
+              <Button color='primary' variant='ghost'>
+                Adopt
+              </Button>
             </div>
           </div>
         </Card>
