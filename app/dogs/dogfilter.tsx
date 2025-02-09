@@ -39,10 +39,11 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     return <div>Loading...</div>;
   }
 
-  const returnFilteredResults = async (): Promise<string> => {
+  const returnFilteredResults = async (): Promise<string[]> => {
     const breedsArray: string[] = Array.from(selectedBreeds);
+    let resultIds: string[] = [];
 
-    const params: URLSearchParams = new URLSearchParams();
+    let params: URLSearchParams = new URLSearchParams();
     if (breedsArray.length > 0) {
       breedsArray.forEach((breed: string) => {
         params.append('breeds', breed);
@@ -59,8 +60,6 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     if (ageMax > 0) {
       params.append('ageMax', String(ageMax));
     }
-    params.append('limit', '100');
-    console.log(params.toString());
 
     const response = await fetch(
       `https://frontend-take-home-service.fetch.com/dogs/search?${params}`,
@@ -69,12 +68,36 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
         credentials: 'include',
       }
     );
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
     const json = await response.json();
-    return json.resultIds;
+    let next = json.next;
+
+    while (next !== null) {
+      const response = await fetch(
+        'https://frontend-take-home-service.fetch.com' + next,
+        {
+          method: 'GET',
+          credentials: 'include',
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const json = await response.json();
+      next = json.next;
+      resultIds = resultIds.concat(json.resultIds);
+      if (resultIds.length >= 100) {
+        break;
+      }
+    }
+
+    return resultIds;
   };
 
   const onButtonSearch = async () => {
-    const resultIds: string = await returnFilteredResults();
+    const resultIds: string[] = await returnFilteredResults();
     console.log(resultIds);
 
     const response: Response = await fetch(
