@@ -18,11 +18,10 @@ const Dogs = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   return (
     <div className='flex'>
-      <div className='w-1/4'>
-        <ScrollShadow>
-          <DogFilter setDogs={setDogs} />
-        </ScrollShadow>
-      </div>
+      <ScrollShadow>
+        <DogFilter setDogs={setDogs} />
+      </ScrollShadow>
+
       <div>
         <DogDisplay dogs={dogs} />
       </div>

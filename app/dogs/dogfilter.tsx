@@ -13,7 +13,6 @@ import {
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Dog } from './page';
-import { X } from 'lucide-react';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
@@ -98,6 +97,46 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     setDogs(json);
   };
 
+  const DogInputFields = () => {
+    return (
+      <div>
+        <label className='font-bold'>Age min</label>
+        <Input onChange={e => setAgeMin(Number(e.target.value))} />
+        <label className='font-bold'>Age max</label>
+        <Input onChange={e => setAgeMax(Number(e.target.value))} />
+        <label className='font-bold'>Zip Code</label>
+        <Input onChange={e => setZipCode([Number(e.target.value)])} />
+      </div>
+    );
+  };
+
+  const DogBreedList = () => {
+    return (
+      <Accordion className='h-screen overflow-y-auto  rounded-lg'>
+        <AccordionItem
+          title='Dog Breeds'
+          subtitle={<span>Press to expand</span>}
+        >
+          {dogBreeds.map(breed => (
+            <div className='flex' key={breed}>
+              <Checkbox
+                checked={selectedBreeds.has(breed)}
+                onChange={() => {
+                  if (selectedBreeds.has(breed)) {
+                    setSelectedBreeds(new Set(selectedBreeds.values()));
+                  } else {
+                    setSelectedBreeds(new Set([...selectedBreeds, breed]));
+                  }
+                }}
+              />
+              {breed}
+            </div>
+          ))}
+        </AccordionItem>
+      </Accordion>
+    );
+  };
+
   return (
     <div className='p-4 mr-4 '>
       <Button onPress={onOpen}></Button>
@@ -114,41 +153,11 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
                 ></Button>
               </DrawerHeader>
               <DrawerBody>
-                <div>
-                  <label className='font-bold'>Age min</label>
-                  <Input onChange={e => setAgeMin(Number(e.target.value))} />
-                  <label className='font-bold'>Age max</label>
-                  <Input onChange={e => setAgeMax(Number(e.target.value))} />
-                  <label className='font-bold'>Zip Code</label>
-                  <Input onChange={e => setZipCode([Number(e.target.value)])} />
+                <div className='flex justify-end'>
+                  <Button onPress={onButtonSearch}>Search</Button>
                 </div>
-
-                <Accordion className='h-screen overflow-y-auto  rounded-lg'>
-                  <AccordionItem
-                    title='Dog Breeds'
-                    subtitle={<span>Press to expand</span>}
-                  >
-                    {dogBreeds.map(breed => (
-                      <div className='flex' key={breed}>
-                        <Checkbox
-                          checked={selectedBreeds.has(breed)}
-                          onChange={() => {
-                            if (selectedBreeds.has(breed)) {
-                              setSelectedBreeds(
-                                new Set(selectedBreeds.values())
-                              );
-                            } else {
-                              setSelectedBreeds(
-                                new Set([...selectedBreeds, breed])
-                              );
-                            }
-                          }}
-                        />
-                        {breed}
-                      </div>
-                    ))}
-                  </AccordionItem>
-                </Accordion>
+                <DogInputFields />
+                <DogBreedList />
               </DrawerBody>
             </>
           )}
