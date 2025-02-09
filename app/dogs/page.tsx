@@ -24,7 +24,7 @@ const Dogs = () => {
         <DogFilter setDogs={setDogs} />
       </ScrollShadow>
 
-      <div>
+      <div className='flex justify-center w-screen'>
         <DogDisplay dogs={dogs} />
       </div>
     </>
