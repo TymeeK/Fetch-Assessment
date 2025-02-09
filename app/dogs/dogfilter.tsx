@@ -110,33 +110,6 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     );
   };
 
-  const DogBreedList = () => {
-    return (
-      <Accordion className='h-screen overflow-y-auto  rounded-lg'>
-        <AccordionItem
-          title='Dog Breeds'
-          subtitle={<span>Press to expand</span>}
-        >
-          {dogBreeds.map(breed => (
-            <div className='flex' key={breed}>
-              <Checkbox
-                checked={selectedBreeds.has(breed)}
-                onChange={() => {
-                  if (selectedBreeds.has(breed)) {
-                    setSelectedBreeds(new Set(selectedBreeds.values()));
-                  } else {
-                    setSelectedBreeds(new Set([...selectedBreeds, breed]));
-                  }
-                }}
-              />
-              {breed}
-            </div>
-          ))}
-        </AccordionItem>
-      </Accordion>
-    );
-  };
-
   return (
     <div className='p-4 mr-4 '>
       <Button onPress={onOpen}></Button>
@@ -157,7 +130,32 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
                   <Button onPress={onButtonSearch}>Search</Button>
                 </div>
                 <DogInputFields />
-                <DogBreedList />
+                <Accordion className='h-screen overflow-y-auto rounded-lg'>
+                  <AccordionItem
+                    title='Dog Breeds'
+                    subtitle={<span>Press to expand</span>}
+                  >
+                    {dogBreeds.map(breed => (
+                      <div className='flex' key={breed}>
+                        <Checkbox
+                          checked={selectedBreeds.has(breed)}
+                          onChange={() => {
+                            if (selectedBreeds.has(breed)) {
+                              setSelectedBreeds(
+                                new Set(selectedBreeds.values())
+                              );
+                            } else {
+                              setSelectedBreeds(
+                                new Set([...selectedBreeds, breed])
+                              );
+                            }
+                          }}
+                        />
+                        {breed}
+                      </div>
+                    ))}
+                  </AccordionItem>
+                </Accordion>
               </DrawerBody>
             </>
           )}
