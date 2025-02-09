@@ -59,6 +59,7 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     if (ageMax > 0) {
       params.append('ageMax', String(ageMax));
     }
+    params.append('limit', '100');
     console.log(params.toString());
 
     const response = await fetch(
@@ -69,7 +70,6 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
       }
     );
     const json = await response.json();
-    console.log(json, json.resultIds);
     return json.resultIds;
   };
 

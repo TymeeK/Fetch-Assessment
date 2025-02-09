@@ -14,6 +14,11 @@ const DogDisplay: React.FC<DogDisplayProps> = ({ dogs }) => {
   const indexOfFirstDog = indexOfLastDog - dogsPerPage;
   const currentDogs = dogs.slice(indexOfFirstDog, indexOfLastDog);
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className='grid sm:grid-cols-1 md:grid-cols-3 '>
       {currentDogs.map((dog: Dog) => (
@@ -42,7 +47,7 @@ const DogDisplay: React.FC<DogDisplayProps> = ({ dogs }) => {
         <Pagination
           total={Math.ceil(dogs.length / dogsPerPage)}
           initialPage={1}
-          onChange={page => setCurrentPage(page)}
+          onChange={handlePageChange}
         />
       </div>
     </div>
