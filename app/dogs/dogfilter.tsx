@@ -1,5 +1,11 @@
 'use client';
-import { Button, Card, Checkbox, Input } from '@heroui/react';
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Checkbox,
+  Input,
+} from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Dog } from './page';
 
@@ -87,25 +93,29 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
   };
 
   return (
-    <div>
-      <h2>Filter</h2>
-      <div>
-        <label>Age min</label>
-        <Input onChange={e => setAgeMin(Number(e.target.value))} />
-        <label>Age max</label>
-        <Input onChange={e => setAgeMax(Number(e.target.value))} />
-        <label>Zip Code</label>
-        <Input onChange={e => setZipCode([Number(e.target.value)])} />
+    <div className='p-4 mr-4 '>
+      <div className='flex justify-between'>
+        <h2 className='text-2xl text-center pb-3 font-bold '>Dog Filter</h2>
+
+        <Button onPress={onButtonSearch}>Search</Button>
       </div>
-      <Button onPress={onButtonSearch}>Search</Button>
 
       <div>
-        {dogBreeds.map(breed => (
-          <Card
-            className='p-4 cursor-pointer rounded-lg border ${selectedBreeds.has(breed) ? "bg-foreground text-background" : ""}'
-            key={breed}
-          >
-            <div className='flex'>
+        <label className='font-bold'>Age min</label>
+        <Input onChange={e => setAgeMin(Number(e.target.value))} />
+        <label className='font-bold'>Age max</label>
+        <Input onChange={e => setAgeMax(Number(e.target.value))} />
+        <label className='font-bold'>Zip Code</label>
+        <Input onChange={e => setZipCode([Number(e.target.value)])} />
+      </div>
+
+      <Accordion className='h-screen overflow-y-auto  rounded-lg'>
+        <AccordionItem
+          title='Dog Breeds'
+          subtitle={<span>Press to expand</span>}
+        >
+          {dogBreeds.map(breed => (
+            <div className='flex' key={breed}>
               <Checkbox
                 checked={selectedBreeds.has(breed)}
                 onChange={() => {
@@ -118,9 +128,9 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
               />
               {breed}
             </div>
-          </Card>
-        ))}
-      </div>
+          ))}
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };
