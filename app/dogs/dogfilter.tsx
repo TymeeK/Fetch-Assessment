@@ -111,8 +111,13 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
   };
 
   return (
-    <div className='p-4 mr-4 '>
-      <Button onPress={onOpen}></Button>
+    <div className='p-4 mr-4 sm:justify-center'>
+      <div className='flex justify-center w-screen'>
+        <Button onPress={onOpen} onClickCapture={onOpen}>
+          Filter Dogs
+        </Button>
+      </div>
+
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement='left'>
         <DrawerContent>
           {onClose => (
