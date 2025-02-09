@@ -4,10 +4,16 @@ import {
   AccordionItem,
   Button,
   Checkbox,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
   Input,
+  useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Dog } from './page';
+import { X } from 'lucide-react';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
@@ -20,7 +26,7 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
   const [ageMin, setAgeMin] = useState<number>(0);
   const [ageMax, setAgeMax] = useState<number>(0);
   const [zipCode, setZipCode] = useState<number[]>([]);
-
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   useEffect(() => {
     fetch('https://frontend-take-home-service.fetch.com/dogs/breeds', {
       method: 'GET',
@@ -94,43 +100,60 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
 
   return (
     <div className='p-4 mr-4 '>
-      <div className='flex justify-between'>
-        <h2 className='text-2xl text-center pb-3 font-bold '>Dog Filter</h2>
+      <Button onPress={onOpen}></Button>
+      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement='left'>
+        <DrawerContent>
+          {onClose => (
+            <>
+              <DrawerHeader>
+                Dog Filter
+                <Button
+                  color='danger'
+                  variant='light'
+                  onPress={onClose}
+                ></Button>
+              </DrawerHeader>
+              <DrawerBody>
+                <div>
+                  <label className='font-bold'>Age min</label>
+                  <Input onChange={e => setAgeMin(Number(e.target.value))} />
+                  <label className='font-bold'>Age max</label>
+                  <Input onChange={e => setAgeMax(Number(e.target.value))} />
+                  <label className='font-bold'>Zip Code</label>
+                  <Input onChange={e => setZipCode([Number(e.target.value)])} />
+                </div>
 
-        <Button onPress={onButtonSearch}>Search</Button>
-      </div>
-
-      <div>
-        <label className='font-bold'>Age min</label>
-        <Input onChange={e => setAgeMin(Number(e.target.value))} />
-        <label className='font-bold'>Age max</label>
-        <Input onChange={e => setAgeMax(Number(e.target.value))} />
-        <label className='font-bold'>Zip Code</label>
-        <Input onChange={e => setZipCode([Number(e.target.value)])} />
-      </div>
-
-      <Accordion className='h-screen overflow-y-auto  rounded-lg'>
-        <AccordionItem
-          title='Dog Breeds'
-          subtitle={<span>Press to expand</span>}
-        >
-          {dogBreeds.map(breed => (
-            <div className='flex' key={breed}>
-              <Checkbox
-                checked={selectedBreeds.has(breed)}
-                onChange={() => {
-                  if (selectedBreeds.has(breed)) {
-                    setSelectedBreeds(new Set(selectedBreeds.values()));
-                  } else {
-                    setSelectedBreeds(new Set([...selectedBreeds, breed]));
-                  }
-                }}
-              />
-              {breed}
-            </div>
-          ))}
-        </AccordionItem>
-      </Accordion>
+                <Accordion className='h-screen overflow-y-auto  rounded-lg'>
+                  <AccordionItem
+                    title='Dog Breeds'
+                    subtitle={<span>Press to expand</span>}
+                  >
+                    {dogBreeds.map(breed => (
+                      <div className='flex' key={breed}>
+                        <Checkbox
+                          checked={selectedBreeds.has(breed)}
+                          onChange={() => {
+                            if (selectedBreeds.has(breed)) {
+                              setSelectedBreeds(
+                                new Set(selectedBreeds.values())
+                              );
+                            } else {
+                              setSelectedBreeds(
+                                new Set([...selectedBreeds, breed])
+                              );
+                            }
+                          }}
+                        />
+                        {breed}
+                      </div>
+                    ))}
+                  </AccordionItem>
+                </Accordion>
+              </DrawerBody>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
