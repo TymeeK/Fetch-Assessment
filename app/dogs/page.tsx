@@ -4,6 +4,7 @@ import DogDisplay from './dogdisplay';
 import DogFilter from './dogfilter';
 import { ScrollShadow } from '@heroui/react';
 import { useState } from 'react';
+import Nav from '@/components/navbar';
 
 export interface Dog {
   id: string;
@@ -17,7 +18,8 @@ export interface Dog {
 const Dogs = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   return (
-    <div className='flex'>
+    <>
+      <Nav />
       <ScrollShadow>
         <DogFilter setDogs={setDogs} />
       </ScrollShadow>
@@ -25,7 +27,7 @@ const Dogs = () => {
       <div>
         <DogDisplay dogs={dogs} />
       </div>
-    </div>
+    </>
   );
 };
 
