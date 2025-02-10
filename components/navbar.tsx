@@ -1,5 +1,6 @@
 'use client';
 import { Navbar, NavbarBrand, NavbarContent, Link } from '@heroui/react';
+import { Menu } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
@@ -17,7 +18,7 @@ const Nav = () => {
   };
 
   return (
-    <Navbar>
+    <Navbar isBordered>
       <NavbarBrand>
         <p>Doggos</p>
       </NavbarBrand>
