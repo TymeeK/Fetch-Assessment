@@ -39,20 +39,35 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     return <div>Loading...</div>;
   }
 
+  const checkArrayLength = <T,>(array: T[]): boolean => {
+    return array.length > 0;
+  };
+
+  const appendParams = <T,>(
+    array: T[],
+    params: URLSearchParams,
+    paramKey: string
+  ): void => {
+    array.forEach((item: T) => {
+      params.append(paramKey, String(item));
+    });
+  };
   const returnFilteredIds = async (): Promise<string[]> => {
     const breedsArray: string[] = Array.from(selectedBreeds);
     let resultIds: string[] = [];
 
     let params: URLSearchParams = new URLSearchParams();
-    if (breedsArray.length > 0) {
-      breedsArray.forEach((breed: string) => {
-        params.append('breeds', breed);
-      });
+
+    const breedsGreaterThanZero: boolean =
+      checkArrayLength<string>(breedsArray);
+    const zipCodeGreaterThanZero: boolean = checkArrayLength<number>(zipCode);
+
+    if (breedsGreaterThanZero) {
+      appendParams<string>(breedsArray, params, 'breeds');
     }
-    if (zipCode.length > 0) {
-      zipCode.forEach((zip: number) => {
-        params.append('zipCodes', String(zip));
-      });
+
+    if (zipCodeGreaterThanZero) {
+      appendParams<number>(zipCode, params, 'zipCodes');
     }
     if (ageMin > 0) {
       params.append('ageMin', String(ageMin));
