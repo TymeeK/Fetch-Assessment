@@ -39,7 +39,7 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     return <div>Loading...</div>;
   }
 
-  const returnFilteredResults = async (): Promise<string[]> => {
+  const returnFilteredIds = async (): Promise<string[]> => {
     const breedsArray: string[] = Array.from(selectedBreeds);
     let resultIds: string[] = [];
 
@@ -86,21 +86,18 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
         throw new Error('Network response was not ok');
       }
       const json = await response.json();
-      next = json.next;
-      resultIds = resultIds.concat(json.resultIds);
-      if (resultIds.length >= 100) {
+      if (!json.next) {
         break;
       }
+      next = json.next;
+      resultIds = resultIds.concat(json.resultIds);
     }
 
     return resultIds;
   };
 
-  const onButtonSearch = async () => {
-    const resultIds: string[] = await returnFilteredResults();
-    console.log(resultIds);
-
-    const response: Response = await fetch(
+  const fetchDogInfo = async (resultId: string[]): Promise<Dog[]> => {
+    const response = await fetch(
       'https://frontend-take-home-service.fetch.com/dogs',
       {
         method: 'POST',
@@ -108,16 +105,27 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify(resultIds),
+        body: JSON.stringify(resultId),
       }
     );
-
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    console.log(response);
-    const json = await response.json();
-    setDogs(json);
+    const json: Dog[] = await response.json();
+    return json;
+  };
+
+  const onButtonSearch = async () => {
+    const resultIds: string[] = await returnFilteredIds();
+    let totalDogs: Dog[] = [];
+
+    for (let i = 0; i < resultIds.length; i += 100) {
+      const slicedArray: string[] = resultIds.slice(i, i + 100);
+      const dogs: Dog[] = await fetchDogInfo(slicedArray);
+      totalDogs = totalDogs.concat(dogs);
+    }
+
+    setDogs(totalDogs);
   };
 
   const DogInputFields = () => {
