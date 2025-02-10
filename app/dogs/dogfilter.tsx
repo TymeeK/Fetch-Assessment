@@ -44,45 +44,42 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
   };
 
   const appendParams = <T,>(
-    array: T[],
+    value: T | T[],
     params: URLSearchParams,
     paramKey: string
   ): void => {
-    array.forEach((item: T) => {
-      params.append(paramKey, String(item));
-    });
+    if (Array.isArray(value)) {
+      const arrayGreaterThanZero: boolean = checkArrayLength<T>(value);
+
+      if (!arrayGreaterThanZero) {
+        return;
+      }
+      value.forEach((item: T) => {
+        params.append(paramKey, String(item));
+      });
+    } else if (typeof value === 'number' && value > 0) {
+      params.append(paramKey, String(value));
+    }
   };
   const returnFilteredIds = async (): Promise<string[]> => {
     const breedsArray: string[] = Array.from(selectedBreeds);
     let resultIds: string[] = [];
 
-    let params: URLSearchParams = new URLSearchParams();
+    let initialParams: URLSearchParams = new URLSearchParams();
 
-    const breedsGreaterThanZero: boolean =
-      checkArrayLength<string>(breedsArray);
-    const zipCodeGreaterThanZero: boolean = checkArrayLength<number>(zipCode);
-
-    if (breedsGreaterThanZero) {
-      appendParams<string>(breedsArray, params, 'breeds');
-    }
-
-    if (zipCodeGreaterThanZero) {
-      appendParams<number>(zipCode, params, 'zipCodes');
-    }
-    if (ageMin > 0) {
-      params.append('ageMin', String(ageMin));
-    }
-    if (ageMax > 0) {
-      params.append('ageMax', String(ageMax));
-    }
+    appendParams<string>(breedsArray, initialParams, 'breeds');
+    appendParams<number>(zipCode, initialParams, 'zipCode');
+    appendParams<number>(ageMin, initialParams, 'ageMin');
+    appendParams<number>(ageMax, initialParams, 'ageMax');
 
     const response = await fetch(
-      `https://frontend-take-home-service.fetch.com/dogs/search?${params}`,
+      `https://frontend-take-home-service.fetch.com/dogs/search?${initialParams}`,
       {
         method: 'GET',
         credentials: 'include',
       }
     );
+
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -105,7 +102,7 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
         break;
       }
       next = json.next;
-      resultIds = resultIds.concat(json.resultIds);
+      resultIds.push(...json.resultIds);
     }
 
     return resultIds;
@@ -137,7 +134,7 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     for (let i = 0; i < resultIds.length; i += 100) {
       const slicedArray: string[] = resultIds.slice(i, i + 100);
       const dogs: Dog[] = await fetchDogInfo(slicedArray);
-      totalDogs = totalDogs.concat(dogs);
+      totalDogs.push(...dogs);
     }
 
     setDogs(totalDogs);
