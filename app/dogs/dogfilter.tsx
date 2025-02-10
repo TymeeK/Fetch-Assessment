@@ -21,11 +21,11 @@ export interface DogFilterProps {
 const DogFilter = ({ setDogs }: DogFilterProps) => {
   const [dogBreeds, setDogBreeds] = useState<string[]>([]);
   const [selectedBreeds, setSelectedBreeds] = useState<Set<string>>(new Set());
-
   const [ageMin, setAgeMin] = useState<number>(0);
   const [ageMax, setAgeMax] = useState<number>(0);
   const [zipCode, setZipCode] = useState<number[]>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   useEffect(() => {
     fetch('https://frontend-take-home-service.fetch.com/dogs/breeds', {
       method: 'GET',
