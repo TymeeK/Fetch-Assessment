@@ -182,7 +182,14 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
               </DrawerHeader>
               <DrawerBody>
                 <div className='flex justify-end'>
-                  <Button onPress={onButtonSearch}>Search</Button>
+                  <Button
+                    onPress={() => {
+                      onButtonSearch();
+                      onClose();
+                    }}
+                  >
+                    Search
+                  </Button>
                 </div>
                 <DogInputFields />
                 <Accordion className='h-screen overflow-y-auto rounded-lg'>

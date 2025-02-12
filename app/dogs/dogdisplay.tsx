@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { Dog } from './page';
 interface DogDisplayProps {
   dogs: Dog[];
+  favoriteDogs: Dog[];
 }
 
-const DogDisplay: React.FC<DogDisplayProps> = ({ dogs }) => {
+const DogDisplay: React.FC<DogDisplayProps> = ({ dogs, favoriteDogs }) => {
   const dogsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
-  const [favoriteDogs, setFavoriteDogs] = useState<string[]>([]);
 
   const indexOfLastDog = currentPage * dogsPerPage;
   const indexOfFirstDog = indexOfLastDog - dogsPerPage;
@@ -21,8 +21,6 @@ const DogDisplay: React.FC<DogDisplayProps> = ({ dogs }) => {
   };
 
   const favoriteDog = async (dog: Dog) => {
-    setFavoriteDogs([...favoriteDogs, dog.id]);
-
     const response = await fetch(
       'https://frontend-take-home-service.fetch.com/dogs/match',
       {
@@ -36,6 +34,16 @@ const DogDisplay: React.FC<DogDisplayProps> = ({ dogs }) => {
     );
     const json = await response.json();
   };
+
+  if (dogs.length === 0) {
+    return (
+      <div className='flex justify-center w-screen h-screen'>
+        <h3 className='text-l font-bold text-gray-400 pt-20'>
+          No dogs found. Press the filter button to search for dogs!
+        </h3>
+      </div>
+    );
+  }
 
   return (
     <>

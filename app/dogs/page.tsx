@@ -28,6 +28,7 @@ export const sortArrayByBreed = (dogs: Dog[]) => {
 
 const Dogs = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
+  const [favoriteDogs, setFavoriteDogs] = useState<Dog[]>([]);
 
   const handleDogFilter = (key: string) => {
     let sortedDogs: Dog[] = [...dogs];
@@ -80,7 +81,7 @@ const Dogs = () => {
       )}
 
       <div className='flex justify-center w-screen'>
-        <DogDisplay dogs={dogs} />
+        <DogDisplay dogs={dogs} favoriteDogs={favoriteDogs} />
       </div>
     </>
   );
