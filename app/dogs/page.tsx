@@ -9,6 +9,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  CircularProgress,
 } from '@heroui/react';
 import { useState } from 'react';
 import Nav from '@/components/navbar';
@@ -29,6 +30,7 @@ export const sortArrayByBreed = (dogs: Dog[]) => {
 const Dogs = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [favoriteDogs, setFavoriteDogs] = useState<Dog[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleDogFilter = (key: string) => {
     let sortedDogs: Dog[] = [...dogs];
@@ -60,7 +62,11 @@ const Dogs = () => {
     <>
       <Nav />
       <ScrollShadow>
-        <DogFilter setDogs={setDogs} />
+        <DogFilter
+          setDogs={setDogs}
+          loading={loading}
+          setLoading={setLoading}
+        />
       </ScrollShadow>
       {dogs.length > 0 && (
         <div className='flex justify-end mr-4'>
@@ -80,9 +86,25 @@ const Dogs = () => {
         </div>
       )}
 
-      <div className='flex justify-center w-screen'>
-        <DogDisplay dogs={dogs} favoriteDogs={favoriteDogs} />
-      </div>
+      {loading && (
+        <div className='flex justify-center items-center h-screen w-screen'>
+          <CircularProgress
+            color='default'
+            size='lg'
+            label='Fetching doggos...'
+          />
+        </div>
+      )}
+      {!loading && dogs.length !== 0 && (
+        <div className='flex justify-center w-screen'>
+          <DogDisplay
+            dogs={dogs}
+            favoriteDogs={favoriteDogs}
+            loading={loading}
+            setLoading={setLoading}
+          />
+        </div>
+      )}
     </>
   );
 };

@@ -16,9 +16,11 @@ import { Dog, sortArrayByBreed } from './page';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
-const DogFilter = ({ setDogs }: DogFilterProps) => {
+const DogFilter = ({ setDogs, loading, setLoading }: DogFilterProps) => {
   const [dogBreeds, setDogBreeds] = useState<string[]>([]);
   const [selectedBreeds, setSelectedBreeds] = useState<Set<string>>(new Set());
   const [ageMin, setAgeMin] = useState<number>(0);
@@ -34,10 +36,6 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
       .then(res => res.json())
       .then(data => setDogBreeds(data));
   }, []);
-
-  if (dogBreeds.length === 0) {
-    return <div>Loading...</div>;
-  }
 
   const checkArrayLength = <T,>(array: T[]): boolean => {
     return array.length > 0;
@@ -71,38 +69,46 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     appendParams<number>(zipCode, initialParams, 'zipCode');
     appendParams<number>(ageMin, initialParams, 'ageMin');
     appendParams<number>(ageMax, initialParams, 'ageMax');
+    setLoading(true);
 
-    const response = await fetch(
-      `https://frontend-take-home-service.fetch.com/dogs/search?${initialParams}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const json = await response.json();
-    let next = json.next;
-
-    while (next !== null) {
+    try {
+      console.log(`Loading from filter! ${loading}`);
       const response = await fetch(
-        'https://frontend-take-home-service.fetch.com' + next,
+        `https://frontend-take-home-service.fetch.com/dogs/search?${initialParams}`,
         {
           method: 'GET',
           credentials: 'include',
         }
       );
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const json = await response.json();
-      if (!json.next) {
-        break;
+      let next = json.next;
+
+      while (next !== null) {
+        const response = await fetch(
+          'https://frontend-take-home-service.fetch.com' + next,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const json = await response.json();
+        if (!json.next) {
+          break;
+        }
+        next = json.next;
+        resultIds.push(...json.resultIds);
       }
-      next = json.next;
-      resultIds.push(...json.resultIds);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
 
     return resultIds;

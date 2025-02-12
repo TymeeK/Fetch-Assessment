@@ -5,9 +5,16 @@ import { Dog } from './page';
 interface DogDisplayProps {
   dogs: Dog[];
   favoriteDogs: Dog[];
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
-const DogDisplay: React.FC<DogDisplayProps> = ({ dogs, favoriteDogs }) => {
+const DogDisplay: React.FC<DogDisplayProps> = ({
+  dogs,
+  favoriteDogs,
+  loading,
+  setLoading,
+}) => {
   const dogsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -35,15 +42,15 @@ const DogDisplay: React.FC<DogDisplayProps> = ({ dogs, favoriteDogs }) => {
     const json = await response.json();
   };
 
-  if (dogs.length === 0) {
-    return (
-      <div className='flex justify-center w-screen h-screen'>
-        <h3 className='text-l font-bold text-gray-400 pt-20'>
-          No dogs found. Press the filter button to search for dogs!
-        </h3>
-      </div>
-    );
-  }
+  // if (dogs.length === 0) {
+  //   return (
+  //     <div className='flex justify-center w-screen '>
+  //       <h3 className='text-l font-bold text-gray-400 pt-20'>
+  //         No dogs found. Press the filter button to search for dogs!
+  //       </h3>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
