@@ -31,6 +31,7 @@ const Dogs = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [favoriteDogs, setFavoriteDogs] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialFetch, setIntialFetch] = useState(false);
 
   const handleDogFilter = (key: string) => {
     let sortedDogs: Dog[] = [...dogs];
@@ -64,8 +65,8 @@ const Dogs = () => {
       <ScrollShadow>
         <DogFilter
           setDogs={setDogs}
-          loading={loading}
           setLoading={setLoading}
+          setInitialFetch={setIntialFetch}
         />
       </ScrollShadow>
       {dogs.length > 0 && (
@@ -95,6 +96,14 @@ const Dogs = () => {
           />
         </div>
       )}
+      {!loading && dogs.length === 0 && !initialFetch && (
+        <div className='flex justify-center w-screen '>
+          <h3 className='text-l font-bold text-gray-400 pt-20'>
+            No dogs found. Press the filter button to search for dogs!
+          </h3>
+        </div>
+      )}
+
       {!loading && dogs.length !== 0 && (
         <div className='flex justify-center w-screen'>
           <DogDisplay

@@ -16,11 +16,15 @@ import { Dog, sortArrayByBreed } from './page';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
-  loading: boolean;
   setLoading: (loading: boolean) => void;
+  setInitialFetch: (initialFetch: boolean) => void;
 }
 
-const DogFilter = ({ setDogs, loading, setLoading }: DogFilterProps) => {
+const DogFilter = ({
+  setDogs,
+  setLoading,
+  setInitialFetch,
+}: DogFilterProps) => {
   const [dogBreeds, setDogBreeds] = useState<string[]>([]);
   const [selectedBreeds, setSelectedBreeds] = useState<Set<string>>(new Set());
   const [ageMin, setAgeMin] = useState<number>(0);
@@ -70,9 +74,9 @@ const DogFilter = ({ setDogs, loading, setLoading }: DogFilterProps) => {
     appendParams<number>(ageMin, initialParams, 'ageMin');
     appendParams<number>(ageMax, initialParams, 'ageMax');
     setLoading(true);
+    setInitialFetch(true);
 
     try {
-      console.log(`Loading from filter! ${loading}`);
       const response = await fetch(
         `https://frontend-take-home-service.fetch.com/dogs/search?${initialParams}`,
         {

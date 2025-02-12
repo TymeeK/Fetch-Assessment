@@ -42,16 +42,6 @@ const DogDisplay: React.FC<DogDisplayProps> = ({
     const json = await response.json();
   };
 
-  // if (dogs.length === 0) {
-  //   return (
-  //     <div className='flex justify-center w-screen '>
-  //       <h3 className='text-l font-bold text-gray-400 pt-20'>
-  //         No dogs found. Press the filter button to search for dogs!
-  //       </h3>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <div className='grid sm:grid-cols-1 md:grid-cols-3 '>
