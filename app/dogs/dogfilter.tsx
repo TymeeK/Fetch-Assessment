@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { Dog } from './page';
+import { Dog, sortArrayByBreed } from './page';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
@@ -137,6 +137,8 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
       totalDogs.push(...dogs);
     }
 
+    totalDogs = sortArrayByBreed(totalDogs);
+
     setDogs(totalDogs);
   };
 
@@ -154,7 +156,7 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
   };
 
   return (
-    <div className='p-4 mr-4 sm:justify-center'>
+    <div className=' mb-4 mt-4 sm:justify-center'>
       <div className='flex justify-center w-screen'>
         <Button onPress={onOpen} onClickCapture={onOpen}>
           Filter Dogs
