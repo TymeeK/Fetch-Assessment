@@ -157,8 +157,13 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
 
   return (
     <div className=' mb-4 mt-4 sm:justify-center'>
-      <div className='flex justify-center w-screen'>
-        <Button onPress={onOpen} onClickCapture={onOpen}>
+      <div className='flex justify-end w-screen'>
+        <Button
+          className='mr-4'
+          variant='bordered'
+          onPress={onOpen}
+          onClickCapture={onOpen}
+        >
           Filter Dogs
         </Button>
       </div>
