@@ -1,6 +1,6 @@
 'use client';
 import { Button, Card, Pagination } from '@heroui/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Dog } from './page';
 interface DogDisplayProps {
   dogs: Dog[];

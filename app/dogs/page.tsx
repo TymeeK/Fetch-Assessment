@@ -205,14 +205,13 @@ const Dogs: React.FC = () => {
 
       {favoriteDogId && favoriteDogId.length > 0 && (
         <div className='flex justify-center w-screen'>
-          <label>You have selected {favoriteDogId.length} favorite dogs</label>
           <Button
             onPress={() => {
               matchFavoriteDog();
               onOpen();
             }}
           >
-            Match!
+            Favorite Dogs({favoriteDogId.length}) Match!
           </Button>
         </div>
       )}

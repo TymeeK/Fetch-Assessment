@@ -8,8 +8,6 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const router = useRouter();
 
-  const [loginError, setLoginError] = useState<boolean>(false);
-
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setName(value);
@@ -32,7 +30,6 @@ const Login = () => {
       }
     );
     if (!response.ok) {
-      setLoginError(true);
       throw new Error('Network response was not ok');
     }
     router.push('/dogs');
@@ -41,7 +38,7 @@ const Login = () => {
   return (
     <div className='w-screen h-screen'>
       <div className='flex flex-col justify-center pt-20'>
-        <h1 className='text-center m-5'>Login</h1>
+        <h1 className='text-center m-5 font-bold'>Login</h1>
 
         <Card className='w-1/4 mx-auto'>
           <div className='flex flex-col'>
