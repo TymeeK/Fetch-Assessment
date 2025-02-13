@@ -12,13 +12,19 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { Dog } from './page';
+import { Dog, sortArrayByBreed } from './page';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
+  setLoading: (loading: boolean) => void;
+  setInitialFetch: (initialFetch: boolean) => void;
 }
 
-const DogFilter = ({ setDogs }: DogFilterProps) => {
+const DogFilter = ({
+  setDogs,
+  setLoading,
+  setInitialFetch,
+}: DogFilterProps) => {
   const [dogBreeds, setDogBreeds] = useState<string[]>([]);
   const [selectedBreeds, setSelectedBreeds] = useState<Set<string>>(new Set());
   const [ageMin, setAgeMin] = useState<number>(0);
@@ -34,10 +40,6 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
       .then(res => res.json())
       .then(data => setDogBreeds(data));
   }, []);
-
-  if (dogBreeds.length === 0) {
-    return <div>Loading...</div>;
-  }
 
   const checkArrayLength = <T,>(array: T[]): boolean => {
     return array.length > 0;
@@ -71,38 +73,46 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
     appendParams<number>(zipCode, initialParams, 'zipCode');
     appendParams<number>(ageMin, initialParams, 'ageMin');
     appendParams<number>(ageMax, initialParams, 'ageMax');
+    setLoading(true);
+    setInitialFetch(true);
 
-    const response = await fetch(
-      `https://frontend-take-home-service.fetch.com/dogs/search?${initialParams}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const json = await response.json();
-    let next = json.next;
-
-    while (next !== null) {
+    try {
       const response = await fetch(
-        'https://frontend-take-home-service.fetch.com' + next,
+        `https://frontend-take-home-service.fetch.com/dogs/search?${initialParams}`,
         {
           method: 'GET',
           credentials: 'include',
         }
       );
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const json = await response.json();
-      if (!json.next) {
-        break;
+      let next = json.next;
+
+      while (next !== null) {
+        const response = await fetch(
+          'https://frontend-take-home-service.fetch.com' + next,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const json = await response.json();
+        if (!json.next) {
+          break;
+        }
+        next = json.next;
+        resultIds.push(...json.resultIds);
       }
-      next = json.next;
-      resultIds.push(...json.resultIds);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
 
     return resultIds;
@@ -137,6 +147,8 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
       totalDogs.push(...dogs);
     }
 
+    totalDogs = sortArrayByBreed(totalDogs);
+
     setDogs(totalDogs);
   };
 
@@ -154,9 +166,14 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
   };
 
   return (
-    <div className='p-4 mr-4 sm:justify-center'>
-      <div className='flex justify-center w-screen'>
-        <Button onPress={onOpen} onClickCapture={onOpen}>
+    <div className=' mb-4 mt-4 sm:justify-center'>
+      <div className='flex justify-end w-screen'>
+        <Button
+          className='mr-4'
+          variant='bordered'
+          onPress={onOpen}
+          onClickCapture={onOpen}
+        >
           Filter Dogs
         </Button>
       </div>
@@ -175,7 +192,14 @@ const DogFilter = ({ setDogs }: DogFilterProps) => {
               </DrawerHeader>
               <DrawerBody>
                 <div className='flex justify-end'>
-                  <Button onPress={onButtonSearch}>Search</Button>
+                  <Button
+                    onPress={() => {
+                      onButtonSearch();
+                      onClose();
+                    }}
+                  >
+                    Search
+                  </Button>
                 </div>
                 <DogInputFields />
                 <Accordion className='h-screen overflow-y-auto rounded-lg'>
