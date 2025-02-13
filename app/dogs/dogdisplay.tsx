@@ -4,16 +4,14 @@ import { useEffect, useState } from 'react';
 import { Dog } from './page';
 interface DogDisplayProps {
   dogs: Dog[];
-  favoriteDogs: Dog[];
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
+  favoriteDogId: string[];
+  setFavoriteDogId: (dogs: string[]) => void;
 }
 
 const DogDisplay: React.FC<DogDisplayProps> = ({
   dogs,
-  favoriteDogs,
-  loading,
-  setLoading,
+  favoriteDogId,
+  setFavoriteDogId,
 }) => {
   const dogsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,18 +26,10 @@ const DogDisplay: React.FC<DogDisplayProps> = ({
   };
 
   const favoriteDog = async (dog: Dog) => {
-    const response = await fetch(
-      'https://frontend-take-home-service.fetch.com/dogs/match',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(favoriteDogs),
-      }
-    );
-    const json = await response.json();
+    if (dog.id in favoriteDogId) {
+      return;
+    }
+    setFavoriteDogId([...favoriteDogId, dog.id]);
   };
 
   return (
