@@ -29,10 +29,6 @@ export interface Dog {
   breed: string;
 }
 
-export const sortArrayByBreed = (dogs: Dog[]): Dog[] => {
-  return dogs.sort((a, b) => a.breed.localeCompare(b.breed));
-};
-
 const Dogs: React.FC = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [favoriteDogId, setFavoriteDogId] = useState<string[]>([]);

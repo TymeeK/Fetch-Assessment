@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { Dog, sortArrayByBreed } from './page';
+import { Dog } from './page';
 
 export interface DogFilterProps {
   setDogs: (dogs: Dog[]) => void;
@@ -40,6 +40,10 @@ const DogFilter = ({
       .then(res => res.json())
       .then(data => setDogBreeds(data));
   }, []);
+
+  const sortArrayByBreed = (dogs: Dog[]): Dog[] => {
+    return dogs.sort((a, b) => a.breed.localeCompare(b.breed));
+  };
 
   const checkArrayLength = <T,>(array: T[]): boolean => {
     return array.length > 0;
