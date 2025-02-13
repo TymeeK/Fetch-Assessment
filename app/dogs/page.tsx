@@ -128,9 +128,9 @@ const Dogs: React.FC = () => {
     );
   };
 
-  // const adoptDog = () => {
-
-  // };
+  const adoptDog = () => {
+    alert('Dog has been adopted!');
+  };
 
   const DogMatchModal: React.FC = () => {
     return (
