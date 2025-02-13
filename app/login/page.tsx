@@ -1,5 +1,5 @@
 'use client';
-import { Input, Button } from '@heroui/react';
+import { Input, Button, Card } from '@heroui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -39,13 +39,43 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <label htmlFor='name'>Name</label>
-      <Input name='name' onChange={handleNameChange} />
-      <label htmlFor='email'>Email</label>
-      <Input name='email' onChange={handleEmailChange} />
-      <Button onPress={handleLoginRequest}>Login</Button>
+    <div className='w-screen h-screen'>
+      <div className='flex flex-col justify-center pt-20'>
+        <h1 className='text-center m-5'>Login</h1>
+
+        <Card className='w-1/4 mx-auto'>
+          <div className='flex flex-col'>
+            <div className='flex flex-col m-3'>
+              <label className='font-bold ' htmlFor='name'>
+                Name
+              </label>
+              <Input name='name' size='md' onChange={handleNameChange} />
+            </div>
+            <div className='flex flex-col m-3'>
+              <label className='font-bold' htmlFor='email'>
+                Email
+              </label>
+              <Input
+                name='email'
+                type='email'
+                size='md'
+                onChange={handleEmailChange}
+              />
+            </div>
+
+            <div className='flex justify-center'>
+              <Button
+                className='m-3 w-8'
+                color='primary'
+                size='sm'
+                onPress={handleLoginRequest}
+              >
+                Login
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
