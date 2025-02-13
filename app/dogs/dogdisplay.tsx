@@ -26,7 +26,7 @@ const DogDisplay: React.FC<DogDisplayProps> = ({
   };
 
   const favoriteDog = async (dog: Dog) => {
-    if (dog.id in favoriteDogId) {
+    if (favoriteDogId.includes(dog.id)) {
       return;
     }
     setFavoriteDogId([...favoriteDogId, dog.id]);
