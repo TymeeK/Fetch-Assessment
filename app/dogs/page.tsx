@@ -42,7 +42,7 @@ const Dogs: React.FC = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const handleDogFilter = (key: string) => {
-    let sortedDogs: Dog[] = [...dogs];
+    const sortedDogs: Dog[] = [...dogs];
     switch (key) {
       case 'asc':
         sortedDogs.sort((a, b) => a.breed.localeCompare(b.breed));
