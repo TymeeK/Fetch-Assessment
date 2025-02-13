@@ -1,8 +1,7 @@
 'use client';
 import { Navbar, NavbarBrand, NavbarContent, Link } from '@heroui/react';
-import { Menu } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const Nav = () => {
   const router = useRouter();

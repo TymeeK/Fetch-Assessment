@@ -65,9 +65,9 @@ const DogFilter = ({
   };
   const returnFilteredIds = async (): Promise<string[]> => {
     const breedsArray: string[] = Array.from(selectedBreeds);
-    let resultIds: string[] = [];
+    const resultIds: string[] = [];
 
-    let initialParams: URLSearchParams = new URLSearchParams();
+    const initialParams: URLSearchParams = new URLSearchParams();
 
     appendParams<string>(breedsArray, initialParams, 'breeds');
     appendParams<number>(zipCode, initialParams, 'zipCode');
